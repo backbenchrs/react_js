@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 const Read = () => {
     const [data, setdata] = useState([]);
+    const [first, setfirst] = useState('')
     const getData = () => {
         axios
         .get("https://63d9f2152af48a60a7c2706b.mockapi.io/crud-operation")
@@ -29,16 +30,26 @@ const Read = () => {
         ).then(() => {
             getData();
         })
-      
     }
+    const handleFilter = (e) => {
+      setfirst(e.target.value.toLowerCase());
+    };
 
   return (
     <>
    
-    <div className="justify-content-between m-2">
+    <div className="d-flex flex-direction-column justify-content-between m-2">
     <Link to='/'>
       <button className="btn btn-secondary">Add Data</button>
       </Link>
+      <div className="d-flex justify-content-between m-2" >
+        <input
+        type="search" 
+        placeholder="Search Data"
+        onChange={handleFilter}
+        />Search
+      </div>
+      </div>
     <div className="d-flex justify-content-between m-2">
       <table className="table table-dark">
         <thead>
@@ -47,11 +58,21 @@ const Read = () => {
             <th scope="col">First Name</th>
             <th scope="col">Last Email</th>        
               <th scope="col">Edit / Delete</th>        
-              {/* <th scope="col">Delete Data</th>         */}
+              {/* <th scope="col">Delete Data</th>*/}
           </tr>
         </thead>
         {
-            data.map((eachData) => {
+            data.filter ((el) => {
+              if(el === '') {
+                return el;
+              }else{
+                return(el.name.toLowerCase().includes(first) ||
+                       el.email.toLowerCase().includes(first) ||
+                       el.id.toLowerCase().includes(first) 
+                ) 
+              }
+            })
+            .map((eachData) => {
                 return(
            
         <tbody>
@@ -74,7 +95,7 @@ const Read = () => {
         }
       </table>
       </div>
-      </div>
+      
     </>
   );
 };
